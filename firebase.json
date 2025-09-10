@@ -1,0 +1,30 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "rampguard-wcc",
+          "appId": "1:338117336307:android:5f414eafae4220ffabeb86",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "rampguard-wcc",
+          "configurations": {
+            "android": "1:338117336307:android:5f414eafae4220ffabeb86",
+            "ios": "1:338117336307:ios:95d3cdaa27fb50dcabeb86",
+            "web": "1:338117336307:web:0250de3fddd676c6abeb86"
+          }
+        }
+      }
+    }
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}
