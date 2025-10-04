@@ -19,10 +19,11 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final courseController = TextEditingController();
+  final emailController = TextEditingController();
 
   bool isLoading = false;
 
-  Future<String?> checkExistingUser(String idNo, String username) async {
+  Future<String?> checkExistingUser(String idNo, String username, String email) async {
     final idQuery = await FirebaseFirestore.instance
         .collection("Users")
         .where("idNo", isEqualTo: idNo)
@@ -36,6 +37,13 @@ class _RegisterPageState extends State<RegisterPage> {
         .get();
 
     if (usernameQuery.docs.isNotEmpty) return "Username is already taken";
+
+    final emailQuery = await FirebaseFirestore.instance
+        .collection("Users")
+        .where("email", isEqualTo: email)
+        .get();
+
+    if (emailQuery.docs.isNotEmpty) return "Username is already taken";
 
     return null;
   }
@@ -57,6 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
       final errorMessage = await checkExistingUser(
         idNoController.text.trim(),
         usernameController.text.trim(),
+        emailController.text.trim().toLowerCase()
       );
 
       if (errorMessage != null) {
@@ -74,6 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
         "username": usernameController.text.trim(),
         "password": passwordController.text.trim(),
         "Course": courseController.text.trim(),
+        "email": emailController.text.trim().toLowerCase()
       });
 
       setState(() => isLoading = false);
@@ -134,6 +144,25 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   validator: (val) =>
                       val!.isEmpty ? "Enter your ID Number" : null,
+                ),
+                const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
+                    labelText: "Email address",
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return "Enter your email";
+                    }
+                    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                    if (!emailRegex.hasMatch(val)) {
+                      return "Enter a valid email";
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
 

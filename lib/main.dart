@@ -7,6 +7,7 @@ import 'package:wcc_attendance_system/pages/QRScannerPage.dart';
 import 'package:wcc_attendance_system/pages/SignOffPage.dart';
 import 'package:wcc_attendance_system/pages/homepage.dart';
 import 'package:wcc_attendance_system/pages/login_page.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 
 
@@ -18,14 +19,19 @@ void main() async {
 
   // initialize Hive for offline storage
   await Hive.initFlutter();
-  await Hive.openBox('offlineData'); // box used by SyncService
+  await Hive.openBox('offlineData');
 
   // initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // start sync listener (connectivity -> sync)
-  // SyncService().start();
+
+  // activate Firebase App Check in debug for both Android & iOS
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug, // Android debug
+    appleProvider: AppleProvider.debug,     // iOS debug
+    webProvider: null,                       // optional for web
+  );
 
   runApp(MyApp(
     isLoggedIn: AppState().documentID != null,
